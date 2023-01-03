@@ -14,14 +14,14 @@ class Solicitation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     user = models.ForeignKey(
-        "user.User",
+        "users.User",
         on_delete=models.CASCADE,
         related_name="solicitations",
     )
 
 #!!!!!!!!
     donee = models.OneToOneField(
-        "donee.Donee",
+        "donees.Donee",
         on_delete=models.CASCADE,
         related_name="solicitations",
     )

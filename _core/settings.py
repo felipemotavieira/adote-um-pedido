@@ -45,7 +45,7 @@ THIRD_PARTY_APPS = [
     ]
 
 MY_APPS = [
-    'address',
+    'addresses',
     'donees',
     'institutions',
     'solicitations',
