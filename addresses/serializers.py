@@ -10,13 +10,12 @@ class AddressSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         created_address = Address.objects.create(**validated_data)
-        ipdb.set_trace()
         user = self.context['request'].user
+        
         setattr(user, 'address', created_address)
-        ipdb.set_trace()
         user.save()
-        ipdb.set_trace()
-        return user
+        
+        return created_address
 
     def update(self, instance: Address, validated_data: dict):
         for key, value in validated_data.items():
