@@ -4,7 +4,7 @@ from .models import Address
 
 class IsUserOrInstitutionAddress(permissions.BasePermission):
     def has_object_permission(self, request: Request, view: View, obj: Address):
-        if request.user.address_id == obj.UniqueID:
+        if request.user.address_id == obj.id:
             return True
 
         return False
