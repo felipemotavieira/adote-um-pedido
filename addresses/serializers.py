@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Address
-import ipdb
+
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:

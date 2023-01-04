@@ -4,11 +4,10 @@ from rest_framework import generics
 from .models import Address
 from .serializers import AddressSerializer
 from .permissions import IsUserOrInstitutionAddress
-import ipdb
+
 
 # Create your views here.
 class AddressView(generics.ListCreateAPIView):
-    # ipdb.set_trace()
     authentication_classes = [JWTAuthentication]
 
     serializer_class = AddressSerializer
@@ -21,3 +20,5 @@ class AddressDetailView(generics.RetrieveUpdateAPIView):
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsUserOrInstitutionAddress]
+
+    lookup_url_kwarg = "address_id"
