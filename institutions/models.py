@@ -13,16 +13,18 @@ class Institution(models.Model):
     cnpj = models.IntegerField()
     phone = models.IntegerField()
     type = models.CharField(max_length=20, choices= TypeChoice.choices, default= TypeChoice.NOT_INFORMED)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     address = models.OneToOneField(
         "addresses.Address",
         on_delete=models.CASCADE,
-        related_name="institution"
+        related_name="institution",
+        null=True
     )
 
-    user = models.OneToOneField(
+    owner = models.OneToOneField(
         "users.User",
         on_delete=models.CASCADE,
         related_name="institution"
