@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 class StatusChoices(models.TextChoices):
     DISPONIVEL = "Disponível"
@@ -8,7 +9,8 @@ class StatusChoices(models.TextChoices):
     NOT_INFORMED = "Não informado"
 
 class Solicitation(models.Model):
-    description = models.CharField(max_length=255)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    description = models.CharField(max_length=200)
     status = models.CharField(max_length=20, choices= StatusChoices.choices, default= StatusChoices.NOT_INFORMED)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
