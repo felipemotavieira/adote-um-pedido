@@ -9,7 +9,11 @@ class IsStaffOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if request.user.is_authenticated and request.user.is_staff:
+        if (
+            request.user.is_authenticated
+            and request.user.is_staff
+            or request.user.is_superuser
+        ):
             return True
 
         return False
