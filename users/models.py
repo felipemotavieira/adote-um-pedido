@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
@@ -12,4 +14,5 @@ class User(AbstractUser):
         "addresses.Address",
         on_delete=models.CASCADE,
         related_name="user",
+        null=True,
     )
