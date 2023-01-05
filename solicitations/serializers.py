@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Solicitation
+from donees.models import Donee
 
 
 class SolicitationSerialzer(serializers.ModelSerializer):

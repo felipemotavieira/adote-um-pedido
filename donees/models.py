@@ -13,3 +13,8 @@ class Donee(models.Model):
         on_delete=models.CASCADE,
         related_name="donees"
     )
+
+
+
+
+    # donee = Donee.objects.create(name = 'teste', age = 47, institution = institution)

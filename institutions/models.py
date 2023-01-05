@@ -30,3 +30,5 @@ class Institution(models.Model):
         related_name="institution"
     )
 
+
+#  institution = Institution.objects.create(name = 'teste', email = 'lucira@sla.com.br', cnpj = '0001/23', phone = '2222-2222' )
