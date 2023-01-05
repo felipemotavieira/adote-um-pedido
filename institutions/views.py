@@ -18,7 +18,7 @@ class InstitutionView(generics.ListCreateAPIView):
 
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsStaffOrReadOnly | IsInstitutionOwner]
+    permission_classes = [IsInstitutionOwner]
 
     serializer_class = InstitutionSerializer
     queryset = Institution.objects.all()

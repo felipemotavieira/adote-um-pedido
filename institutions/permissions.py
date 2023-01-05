@@ -10,7 +10,7 @@ class IsStaffOrReadOnly(permissions.BasePermission):
 
         if (
             request.user.is_authenticated
-            and request.user.is_superuser
+            and request.user.is_staff
         ):
             return True
 
@@ -21,6 +21,11 @@ class IsInstitutionOwner(permissions.BasePermission):
     def has_object_permission(
         self, request, view: View, institution: Institution
     ) -> bool:
-
-        return request.user == institution.owner and request.user.is_staff
-
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return (
+            request.user == institution.owner
+            and request.user.is_staff
+            or request.user.is_staff
+            and request.user.is_superuser
+        )
