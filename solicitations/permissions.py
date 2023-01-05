@@ -2,14 +2,14 @@ from rest_framework import permissions
 from rest_framework.views import Request, View
 from .models import Solicitation
 from donees.models import Donee
-
+import ipdb
 
 class IsStaffOrReadOnly(permissions.BasePermission):
     def has_permission(self, request: Request, view: View) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        donee = Donee.objects.get(id = view.kwargs['pk'])
+        donee = Donee.objects.get(id = request.data['donee'])
 
         if (
             request.user.is_authenticated
@@ -26,11 +26,9 @@ class IsInstitutionDoneeSame(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
+        solicitation = Solicitation.objects.get(id = view.kwargs["solicitation_id"])
 
-        donee = Donee.objects.get(id = view.kwargs['pk'])
-
-
-        if (request.user.is_authenticated and request.user.is_superuser or request.user == donee.institution.owner):
+        if (request.user.is_authenticated and request.user.is_superuser or request.user.id == solicitation.donee.institution.owner.id):
             return True
 
         return False

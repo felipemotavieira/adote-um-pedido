@@ -4,8 +4,6 @@ from donees.models import Donee
 
 
 class SolicitationSerialzer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(read_only = True)
-
     class Meta:
         model = Solicitation
         fields = [
@@ -17,7 +15,7 @@ class SolicitationSerialzer(serializers.ModelSerializer):
             "user_id",
             "donee_id",
         ]
-        read_only_fields = ["user","donee"]
+        read_only_fields = ["user"]
 
 
 
