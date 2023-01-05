@@ -1,10 +1,12 @@
 from django.db import models
 import uuid
 
+
 class TypeChoice(models.TextChoices):
     ORFANATO = "Orfanato"
     ASILO = "Asilo"
     NOT_INFORMED = "Não informado"
+
 
 class Institution(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
@@ -12,7 +14,11 @@ class Institution(models.Model):
     email = models.EmailField(max_length=50, unique=True)
     cnpj = models.IntegerField()
     phone = models.IntegerField()
-    type = models.CharField(max_length=20, choices= TypeChoice.choices, default= TypeChoice.NOT_INFORMED)
+    type = models.CharField(
+        max_length=20,
+        choices=TypeChoice.choices,
+        default=TypeChoice.NOT_INFORMED,
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -21,14 +27,11 @@ class Institution(models.Model):
         "addresses.Address",
         on_delete=models.CASCADE,
         related_name="institution",
-        null=True
+        null=True,
     )
 
     owner = models.OneToOneField(
         "users.User",
         on_delete=models.CASCADE,
-        related_name="institution"
+        related_name="institution",
     )
-
-
-#  institution = Institution.objects.create(name = 'teste', email = 'lucira@sla.com.br', cnpj = '0001/23', phone = '2222-2222' )
