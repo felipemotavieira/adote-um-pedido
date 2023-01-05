@@ -7,9 +7,8 @@ class Donee(models.Model):
     age = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
     institution = models.ForeignKey(
         "institutions.Institution",
         on_delete=models.CASCADE,
-        related_name="donees"
+        related_name="donees",
     )
