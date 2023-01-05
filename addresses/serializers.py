@@ -16,13 +16,13 @@ class AddressSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
 
         if user.is_staff is True and not user.is_superuser:
-            institution = Institution.objects.filter(owner=user)
+            institution = Institution.objects.get(owner=user)
 
             if not institution:
                 raise InstitutionDoesNotExist
 
-            setattr(institution[0], "address", created_address)
-            user.save()
+            setattr(institution, "address", created_address)
+            institution.save()
 
             return created_address
 
