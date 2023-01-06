@@ -47,3 +47,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         read_only_fields = ["created_at", "updated_at"]
         extra_kwargs = {"password": {"write_only": True}}
+
+
+# User.object.create_user('first_name':'Lucas','last_name':'Gal', 'username':'lgf135','email':'galvs@sla.com.br', 'password':'123456','is_active': true, 'is_superuser':true,'is_staff': true,)
