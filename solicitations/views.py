@@ -1,4 +1,5 @@
 from rest_framework import generics
+from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from donees.models import Donee
 from users.models import User
@@ -15,7 +16,7 @@ class SolicitationView(generics.ListCreateAPIView):
     queryset = Solicitation.objects.all()
 
     def perform_create(self, serializer):
-        donee = Donee.objects.get(id = self.request.data['donee'])
+        donee = Donee.objects.get_object_or_404(Donee, id = self.request.data['donee'])
         serializer.save(user = self.request.user, donee = donee)
 
 
