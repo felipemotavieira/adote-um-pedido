@@ -5,7 +5,7 @@ from users.models import User
 from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly
 from .serializers import SolicitationSerialzer
 from .models import Solicitation, StatusChoices
-import ipdb
+
 
 class SolicitationView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -15,7 +15,6 @@ class SolicitationView(generics.ListCreateAPIView):
     queryset = Solicitation.objects.all()
 
     def perform_create(self, serializer):
-        ipdb.set_trace()
         donee = Donee.objects.get(id = self.request.data['donee'])
         serializer.save(user = self.request.user, donee = donee)
 
