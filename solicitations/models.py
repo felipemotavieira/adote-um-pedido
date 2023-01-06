@@ -7,6 +7,7 @@ class StatusChoices(models.TextChoices):
     ENVIADO = "Enviado"
     RECEBIDO = "Recebido"
     NOT_INFORMED = "Não informado"
+    DISABLE = "Desativado"
 
 class Solicitation(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
@@ -22,7 +23,7 @@ class Solicitation(models.Model):
     )
 
 #!!!!!!!!
-    donee = models.OneToOneField(
+    donee = models.ForeignKey(
         "donees.Donee",
         on_delete=models.CASCADE,
         related_name="solicitations",
