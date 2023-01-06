@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-
+        depth = 1
         fields = [
             "id",
             "first_name",
@@ -43,10 +43,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
             "created_at",
             "updated_at",
+            "address",
         ]
 
-        read_only_fields = ["created_at", "updated_at"]
+        read_only_fields = ["created_at", "updated_at", "address"]
         extra_kwargs = {"password": {"write_only": True}}
-
-
-# User.object.create_user('first_name':'Lucas','last_name':'Gal', 'username':'lgf135','email':'galvs@sla.com.br', 'password':'123456','is_active': true, 'is_superuser':true,'is_staff': true,)
