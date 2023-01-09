@@ -2,6 +2,7 @@ from rest_framework import permissions
 from rest_framework.views import Request, View
 from .models import Solicitation
 from donees.models import Donee
+from django.shortcuts import get_object_or_404
 import ipdb
 
 class IsStaffOrReadOnly(permissions.BasePermission):
@@ -9,7 +10,7 @@ class IsStaffOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        donee = Donee.objects.get(id = request.data['donee'])
+        donee = get_object_or_404(Donee,id = request.data['donee'])
 
         if (
             request.user.is_authenticated
@@ -25,7 +26,7 @@ class IsInstitutionDoneeSame(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        solicitation = Solicitation.objects.get(id = view.kwargs["solicitation_id"])
+        solicitation = get_object_or_404(Solicitation,id = view.kwargs["solicitation_id"])
 
         if (request.user.is_authenticated and request.user.is_superuser or request.user.id == solicitation.donee.institution.owner.id):
             return True

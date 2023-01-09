@@ -6,6 +6,7 @@ import ipdb
 class SolicitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solicitation
+        depth = 2 
         fields = [
             "id",
             "description",
@@ -13,7 +14,7 @@ class SolicitationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "user_id",
-            "donee_id",
+            "donee",
         ]
         read_only_fields = ["user"]
 
