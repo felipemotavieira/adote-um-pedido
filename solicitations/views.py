@@ -1,6 +1,7 @@
 from rest_framework import generics, views
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from donees.models import Donee
 from users.models import User
 from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsDonorSolicitationUser
@@ -28,9 +29,9 @@ class SolicitationDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SolicitationSerializer
     queryset = Solicitation.objects.all()
 
-    # def perform_destroy(self, instance):
-    #     instance.status = StatusChoices.DISABLE
-    #     instance.save()
+    def perform_destroy(self, instance):
+        instance.status = StatusChoices.DISABLE
+        instance.save()
 
     lookup_url_kwarg = "solicitation_id"
 
@@ -77,9 +78,9 @@ class SolicitationDropView(views.APIView):
         solicitation = get_object_or_404(Solicitation, id=solicitation_id)
 
         self.check_object_permissions(request, solicitation)
-        ipdb.set_trace()
-        solicitation.user.clear()
+        
+        solicitation.user = None
 
         solicitation.save()
 
-        return solicitation
+        return HttpResponse(status=204)
