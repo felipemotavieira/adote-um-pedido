@@ -6,6 +6,7 @@ from users.models import User
 from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsDonorSolicitationUser
 from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
+from .exceptions import SolicitationAlreadyReceived
 import ipdb
 
 class SolicitationView(generics.ListCreateAPIView):
@@ -57,6 +58,9 @@ class SolicitationAtributionView(views.APIView):
         if solicitation.status == 'Enviado':
             data = {'status': 'Recebido'}
 
+        if solicitation.status == 'Recebido':
+            raise SolicitationAlreadyReceived
+
         serializer = SolicitationSerializer(solicitation, data=data, partial=True)
 
         serializer.is_valid(raise_exception=True)
@@ -73,7 +77,7 @@ class SolicitationDropView(views.APIView):
         solicitation = get_object_or_404(Solicitation, id=solicitation_id)
 
         self.check_object_permissions(request, solicitation)
-
+        ipdb.set_trace()
         solicitation.user.clear()
 
         solicitation.save()
