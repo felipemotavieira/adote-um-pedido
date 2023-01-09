@@ -1,10 +1,10 @@
 from rest_framework import permissions
 from institutions.models import Institution
 from donees.models import Donee
+import ipdb
 
 class isAdmOrStaff(permissions.BasePermission):
     def has_permission(self, request, view):
-
         if request.method in permissions.SAFE_METHODS:
             return True
         
