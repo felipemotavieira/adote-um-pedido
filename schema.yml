@@ -1,0 +1,1162 @@
+openapi: 3.0.3
+info:
+  title: Adote Um Pedido
+  version: 1.0.0
+paths:
+  /api/address/:
+    get:
+      operationId: address_list
+      tags:
+      - address
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+          description: ''
+    post:
+      operationId: address_create
+      tags:
+      - address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Address'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /api/address/{address_id}/:
+    get:
+      operationId: address_retrieve
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - address
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    put:
+      operationId: address_update
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Address'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    patch:
+      operationId: address_partial_update
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /api/donees/:
+    get:
+      operationId: donees_list
+      tags:
+      - donees
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DoneeSerializers'
+          description: ''
+    post:
+      operationId: donees_create
+      tags:
+      - donees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoneeSerializers'
+          description: ''
+  /api/donees/{id}/:
+    get:
+      operationId: donees_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - donees
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoneeSerializers'
+          description: ''
+    put:
+      operationId: donees_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - donees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DoneeSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoneeSerializers'
+          description: ''
+    patch:
+      operationId: donees_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - donees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoneeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDoneeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDoneeSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoneeSerializers'
+          description: ''
+    delete:
+      operationId: donees_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - donees
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/institutions/:
+    get:
+      operationId: institutions_list
+      tags:
+      - institutions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institution'
+          description: ''
+    post:
+      operationId: institutions_create
+      tags:
+      - institutions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Institution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Institution'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+          description: ''
+  /api/institutions/{id}/:
+    get:
+      operationId: institutions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - institutions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+          description: ''
+    put:
+      operationId: institutions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - institutions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Institution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Institution'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+          description: ''
+    patch:
+      operationId: institutions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - institutions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstitution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInstitution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInstitution'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+          description: ''
+    delete:
+      operationId: institutions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - institutions
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/login/:
+    post:
+      operationId: login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/solicitations/:
+    get:
+      operationId: solicitations_list
+      tags:
+      - solicitations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SolicitationSerialzer'
+          description: ''
+    post:
+      operationId: solicitations_create
+      tags:
+      - solicitations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitationSerialzer'
+          description: ''
+  /api/solicitations/{solicitation_id}/:
+    get:
+      operationId: solicitations_retrieve
+      parameters:
+      - in: path
+        name: solicitation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - solicitations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitationSerialzer'
+          description: ''
+    put:
+      operationId: solicitations_update
+      parameters:
+      - in: path
+        name: solicitation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - solicitations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SolicitationSerialzer'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitationSerialzer'
+          description: ''
+    patch:
+      operationId: solicitations_partial_update
+      parameters:
+      - in: path
+        name: solicitation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - solicitations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSolicitationSerialzer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSolicitationSerialzer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSolicitationSerialzer'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitationSerialzer'
+          description: ''
+    delete:
+      operationId: solicitations_destroy
+      parameters:
+      - in: path
+        name: solicitation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - solicitations
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/:
+    get:
+      operationId: users_list
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{user_id}/:
+    get:
+      operationId: users_retrieve
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        state:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        number:
+          type: integer
+        district:
+          type: string
+          maxLength: 50
+        zip_code:
+          type: integer
+      required:
+      - city
+      - district
+      - id
+      - number
+      - state
+      - street
+      - zip_code
+    DoneeSerializers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        age:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        institution:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - age
+      - created_at
+      - id
+      - institution
+      - name
+      - updated_at
+    Institution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 50
+        cnpj:
+          type: integer
+        phone:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: string
+          readOnly: true
+        address:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+      required:
+      - address
+      - cnpj
+      - created_at
+      - email
+      - id
+      - name
+      - owner
+      - phone
+      - updated_at
+    Nested:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 50
+        cnpj:
+          type: integer
+        phone:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        address:
+          type: string
+          format: uuid
+          nullable: true
+        owner:
+          type: string
+          format: uuid
+      required:
+      - cnpj
+      - created_at
+      - email
+      - id
+      - name
+      - owner
+      - phone
+      - updated_at
+    PatchedAddress:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        state:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        number:
+          type: integer
+        district:
+          type: string
+          maxLength: 50
+        zip_code:
+          type: integer
+    PatchedDoneeSerializers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        age:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        institution:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+    PatchedInstitution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 50
+        cnpj:
+          type: integer
+        phone:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: string
+          readOnly: true
+        address:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+    PatchedSolicitationSerialzer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        description:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        donee_id:
+          type: string
+          format: uuid
+          readOnly: true
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+    SolicitationSerialzer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        description:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        donee_id:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - donee_id
+      - id
+      - updated_at
+      - user_id
+    StatusEnum:
+      enum:
+      - Disponível
+      - Não disponível
+      - Enviado
+      - Recebido
+      - Não informado
+      - Desativado
+      type: string
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TypeEnum:
+      enum:
+      - Orfanato
+      - Asilo
+      - Não informado
+      type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - address
+      - created_at
+      - email
+      - id
+      - password
+      - updated_at
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
