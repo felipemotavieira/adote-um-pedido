@@ -7,7 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 class InstitutionSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
 
-    cnpj = serializers.IntegerField(
+    cnpj = serializers.CharField(
         validators=[
             UniqueValidator(
                 queryset=Institution.objects.all(),

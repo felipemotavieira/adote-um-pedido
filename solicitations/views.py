@@ -1,29 +1,32 @@
-from rest_framework import generics
+from rest_framework import generics, views
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from donees.models import Donee
 from users.models import User
-from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly
-from .serializers import SolicitationSerialzer
+from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsDonorSolicitationUser
+from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
-
+from .exceptions import SolicitationAlreadyReceived
+import ipdb
 
 class SolicitationView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsStaffOrReadOnly]
 
-    serializer_class = SolicitationSerialzer
+    serializer_class = SolicitationSerializer
     queryset = Solicitation.objects.all()
 
     def perform_create(self, serializer):
         donee = Donee.objects.get(id = self.request.data['donee'])
-        serializer.save(user = self.request.user, donee = donee)
+        serializer.save(donee = donee)
 
 
 class SolicitationDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsInstitutionDoneeSame]
 
-    serializer_class = SolicitationSerialzer
+    serializer_class = SolicitationSerializer
     queryset = Solicitation.objects.all()
 
     def perform_destroy(self, instance):
@@ -31,3 +34,53 @@ class SolicitationDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.save()
 
     lookup_url_kwarg = "solicitation_id"
+
+class SolicitationAtributionView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsDonor]
+
+    def patch(self, request, solicitation_id):
+        solicitation = get_object_or_404(Solicitation, id=solicitation_id)
+
+        if not solicitation.user:
+            solicitation.user = request.user
+
+        self.check_object_permissions(request, solicitation)
+        
+        if solicitation.status == 'Não informado':
+            data = {'status': 'Disponível'}
+
+        if solicitation.status == 'Disponível':
+            data = {'status': 'Não disponível'}
+
+        if solicitation.status == 'Não disponível':
+            data = {'status': 'Enviado'}
+
+        if solicitation.status == 'Enviado':
+            data = {'status': 'Recebido'}
+
+        if solicitation.status == 'Recebido':
+            raise SolicitationAlreadyReceived
+
+        serializer = SolicitationSerializer(solicitation, data=data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return views.Response(serializer.data)
+
+class SolicitationDropView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsDonorSolicitationUser]
+
+    def patch(self, request, solicitation_id):
+        solicitation = get_object_or_404(Solicitation, id=solicitation_id)
+
+        self.check_object_permissions(request, solicitation)
+        
+        solicitation.user = None
+
+        solicitation.save()
+
+        return HttpResponse(status=204)
