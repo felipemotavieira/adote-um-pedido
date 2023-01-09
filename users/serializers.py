@@ -14,6 +14,15 @@ class UserSerializer(serializers.ModelSerializer):
         ],
     )
 
+    cpf = serializers.CharField(
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message="CPF already exists.",
+            )
+        ],
+    )
+
     def create(self, validated_data: dict) -> User:
         return User.objects.create_user(**validated_data)
 
@@ -38,6 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "password",
+            "cpf",
             "is_active",
             "is_superuser",
             "is_staff",
