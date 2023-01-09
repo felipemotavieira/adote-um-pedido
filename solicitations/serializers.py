@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from .models import Solicitation
 from donees.models import Donee
+import ipdb
 
-
-class SolicitationSerialzer(serializers.ModelSerializer):
+class SolicitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solicitation
         fields = [
@@ -29,5 +29,4 @@ class SolicitationSerialzer(serializers.ModelSerializer):
             setattr(instance,key,value)
         
         instance.save()
-
         return instance
