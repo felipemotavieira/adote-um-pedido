@@ -65,11 +65,11 @@ class UserViewsTest(APITestCase):
         for user in self.users:
             self.assertIn(UserSerializer(instance=user).data, response.data)
 
-    def test_cannot_retrieve_or_update_or_delete_without_authentication(self):
+    def test_cannot_retrieve_or_update_or_delete_user_without_authentication(self):
         user = self.users[0]
         retrieve_response = self.client.get(f"/api/users/{user.id}/")
-        update_response = self.client.get(f"/api/users/{user.id}/")
-        delete_response = self.client.get(f"/api/users/{user.id}/")
+        update_response = self.client.patch(f"/api/users/{user.id}/")
+        delete_response = self.client.delete(f"/api/users/{user.id}/")
 
         self.assertEqual(retrieve_response.status_code, 401)
         self.assertEqual(update_response.status_code, 401)
@@ -87,6 +87,22 @@ class UserViewsTest(APITestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
 
+    def test_not_admin_cannot_update_another_user(self):
+        self.authenticate_user()
+        user = self.users[0]
+        response = self.client.patch(f"/api/users/{user.id}/")
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
+    def test_not_admin_cannot_delete_another_user(self):
+        self.authenticate_user()
+        user = self.users[0]
+        response = self.client.delete(f"/api/users/{user.id}/")
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
     def test_not_admin_can_retrieve_your_own_profile(self):
         self.authenticate_user()
         user = self.users[1]
@@ -95,6 +111,27 @@ class UserViewsTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(user.id))
         self.assertEqual(UserSerializer(instance=user).data, response.data)
+
+    def test_not_admin_can_update_your_own_profile(self):
+        self.authenticate_user()
+        user = self.users[1]
+        response = self.client.patch(f"/api/users/{user.id}/", {"email": "naiane@hotmail.com"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(user.id))
+        self.assertEqual(response.data["email"], "naiane@hotmail.com")
+
+    def test_not_admin_can_delete_your_own_profile(self):
+        self.authenticate_user()
+        user = self.users[1]
+        response = self.client.delete(f"/api/users/{user.id}/")
+
+        self.authenticate_admin()
+        deleted = self.client.get(f"/api/users/{user.id}/")
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(response.data)
+        self.assertFalse(deleted.data["is_active"])
 
     def test_admin_can_retrieve_another_user(self):
         self.authenticate_admin()
@@ -105,6 +142,25 @@ class UserViewsTest(APITestCase):
         self.assertEqual(response.data["id"], str(user.id))
         self.assertEqual(UserSerializer(instance=user).data, response.data)
 
+    def test_admin_can_update_another_user(self):
+        self.authenticate_admin()
+        user = self.users[1]
+        response = self.client.patch(f"/api/users/{user.id}/", {"email": "naiane@hotmail.com"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(user.id))
+        self.assertEqual(response.data["email"], "naiane@hotmail.com")
+
+    def test_admin_can_delete_another_user(self):
+        self.authenticate_admin()
+        user = self.users[1]
+        response = self.client.delete(f"/api/users/{user.id}/")
+        deleted = self.client.get(f"/api/users/{user.id}/")
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(response.data)
+        self.assertFalse(deleted.data["is_active"])
+
     def test_admin_can_retrieve_your_own_profile(self):
         self.authenticate_admin()
         user = self.users[0]
@@ -113,3 +169,20 @@ class UserViewsTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(user.id))
         self.assertEqual(UserSerializer(instance=user).data, response.data)
+
+    def test_admin_can_update_your_own_profile(self):
+        self.authenticate_admin()
+        user = self.users[0]
+        response = self.client.patch(f"/api/users/{user.id}/", {"email": "lucas@hotmail.com"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(user.id))
+        self.assertEqual(response.data["email"], "lucas@hotmail.com")
+
+    def test_admin_can_delete_your_own_profile(self):
+        self.authenticate_admin()
+        user = self.users[0]
+        response = self.client.delete(f"/api/users/{user.id}/")
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(response.data)
