@@ -10,6 +10,8 @@ from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsD
 from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
 from .exceptions import SolicitationAlreadyReceived
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 import ipdb
 
 class SolicitationView(generics.ListCreateAPIView):
@@ -88,6 +90,15 @@ class SolicitationAtributionView(views.APIView):
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
+
+
+        send_mail(
+            subject = 'Atualização de status',
+            message = f'Olá, {request.user}. \nO Status da solicição reivindicada foi atualizado para: {data["status"]}.',
+            from_email = settings.EMAIL_HOST_USER,
+            recipient_list = [request.user.email],
+            fail_silently = False
+        )
 
         return views.Response(serializer.data)
 
