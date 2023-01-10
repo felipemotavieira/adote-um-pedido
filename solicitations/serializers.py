@@ -14,8 +14,9 @@ class SolicitationSerializer(serializers.ModelSerializer):
             "updated_at",
             "user_id",
             "donee_id",
+            "institution"
         ]
-        read_only_fields = ["user"]
+        read_only_fields = ["user","institution","created_at","updated_at"]
 
 
 
