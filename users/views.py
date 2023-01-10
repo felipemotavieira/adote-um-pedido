@@ -19,9 +19,9 @@ class UserView(generics.ListCreateAPIView):
         serializer.save()
         user = self.request.data
         send_mail(
-            subject="Sua conta no AdoteUmPedito foi criada",
+            subject="Conta AdoteUmPedito",
             message=f"""
-                Olá, {user["first_name"]}.
+                Olá, {user['first_name']}.
                     Sua conta no Adote Um Pedito foi criada com sucesso!
             """,
             from_email=settings.EMAIL_HOST_USER,
