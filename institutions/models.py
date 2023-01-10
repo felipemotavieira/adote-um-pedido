@@ -18,7 +18,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50, unique=True)
     cnpj = models.CharField(max_length=14, unique=True)
-    phone = models.IntegerField()
+    phone = models.CharField(max_length=16)
     type = models.CharField(
         max_length=20,
         choices=TypeChoice.choices,

@@ -14,9 +14,10 @@ class InstitutionView(generics.ListCreateAPIView):
     queryset = Institution.objects.all()
 
     def perform_create(self, serializer):
-        if self.request.user.institution:
+        # ipdb.set_trace()
+        if hasattr(self.request.user, 'institution'):
             raise UserAlreadyHasInstitution
-        ipdb.set_trace()
+
         serializer.save(owner=self.request.user)
 
 
