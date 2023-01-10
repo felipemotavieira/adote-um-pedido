@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from institutions.models import Institution
 from donees.models import Donee
-import ipdb
+
 
 class isAdmOrStaff(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -10,7 +10,7 @@ class isAdmOrStaff(permissions.BasePermission):
         
         institution = Institution.objects.get(pk = view.kwargs["pk"])
 
-        if request.user.id == institution.owner.id :
+        if request.user.id == institution.owner.id or request.user.is_superuser:
             return True
 
         return False
@@ -24,8 +24,9 @@ class isAdmOwner(permissions.BasePermission):
 
         donee = Donee.objects.get(id = view.kwargs["pk"])
 
-        if request.user == donee.institution.owner:
+        if request.user == donee.institution.owner or request.user.is_superuser:
             return True
+       
 
         return False
 
