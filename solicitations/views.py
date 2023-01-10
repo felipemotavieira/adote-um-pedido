@@ -81,6 +81,9 @@ class SolicitationAtributionView(views.APIView):
             data = {'status': 'Recebido'}
 
         if solicitation.status == 'Recebido':
+            data = {'status': 'Desativado'}
+
+        if solicitation.status == 'Desativado':
             raise SolicitationAlreadyReceived
 
         serializer = SolicitationSerializer(solicitation, data=data, partial=True)
