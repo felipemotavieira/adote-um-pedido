@@ -23,6 +23,13 @@ class Solicitation(models.Model):
         null=True
     )
 
+    institution = models.ForeignKey(
+        "institutions.Institution",
+        on_delete=models.CASCADE,
+        related_name="solicitations",
+        null=True
+    )
+
 #!!!!!!!!
     donee = models.ForeignKey(
         "donees.Donee",
