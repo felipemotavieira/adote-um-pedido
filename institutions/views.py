@@ -1,9 +1,10 @@
 from .serializers import InstitutionSerializer
 from .models import Institution
+from .exceptions import UserAlreadyHasInstitution
 from rest_framework import generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsStaffOrReadOnly, IsInstitutionOwner
-
+import ipdb
 
 class InstitutionView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -13,6 +14,10 @@ class InstitutionView(generics.ListCreateAPIView):
     queryset = Institution.objects.all()
 
     def perform_create(self, serializer):
+        # ipdb.set_trace()
+        if hasattr(self.request.user, 'institution'):
+            raise UserAlreadyHasInstitution
+
         serializer.save(owner=self.request.user)
 
 
