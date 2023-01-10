@@ -18,24 +18,26 @@ class SolicitationView(generics.ListCreateAPIView):
     serializer_class = SolicitationSerializer
     queryset = Solicitation.objects.all()
 
-    def perform_create(self, serializer):
+    def create(self,request, *args,**kwargs):
         donee = get_object_or_404(Donee,id = self.request.data['donee'])
         canCreate = donee.solicitations.all()
         for solicitation in canCreate:
-            if solicitation.status != "desativado":
-                print("DEU MERDA")
-                return Response(data = {"message": "DEU MERDA"}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        serializer.save(donee = donee)
+            if solicitation.status != "Desativado":
+                return Response(data = {"message": "User Already has another active solicitation"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return super().create(request,*args,**kwargs)
+
+    def perform_create(self, serializer):
+        donee = get_object_or_404(Donee,id = self.request.data['donee'])
+        institution = get_object_or_404(Institution, owner = donee.institution.owner.id)
+        serializer.save(donee = donee, institution = institution)
 
     
     def get_queryset(self):
         if self.request.user.is_staff != True:
             return self.queryset.filter(status = "Disponível")
         elif self.request.user.is_superuser != True:
-            institution = Institution.objects.get(owner = self.request.user)
-            donees = Donee.objects.filter(institution = institution)
-            ipdb.set_trace()
-            return self.queryset.filter()
+            institution = get_object_or_404(Institution, owner = self.request.user.id)
+            return self.queryset.filter( institution = institution)
         return self.queryset.all()
 
 
