@@ -34,13 +34,12 @@ class SolicitationView(generics.ListCreateAPIView):
         serializer.save(donee = donee, institution = institution)
 
 
-    
     def get_queryset(self):
         if self.request.user.is_staff != True:
             return self.queryset.filter(status = "Disponível")
         elif self.request.user.is_superuser != True:
             institution = get_object_or_404(Institution, owner = self.request.user.id)
-            return self.queryset.filter( institution = institution)
+            return self.queryset.filter(institution = institution)
         return self.queryset.all()
 
 
@@ -64,11 +63,11 @@ class SolicitationAtributionView(views.APIView):
     def patch(self, request, solicitation_id):
         solicitation = get_object_or_404(Solicitation, id=solicitation_id)
 
-        if not solicitation.user:
+        if not solicitation.user and not request.user.is_superuser:
             solicitation.user = request.user
 
         self.check_object_permissions(request, solicitation)
-        
+
         if solicitation.status == 'Não informado':
             data = {'status': 'Disponível'}
 
