@@ -36,6 +36,9 @@ class IsInstitutionDoneeSame(permissions.BasePermission):
 
 class IsDonor(permissions.BasePermission):
     def has_object_permission(self, request, view: View, solicitation: Solicitation) -> bool:
+        if request.user.is_superuser:
+            return True
+        
         if request.user.is_staff:
             return False
 
