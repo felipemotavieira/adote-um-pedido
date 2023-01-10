@@ -6,6 +6,6 @@ class Address(models.Model):
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
-    number = models.IntegerField()
+    number = models.CharField(max_length=16)
     district = models.CharField(max_length=50)
-    zip_code = models.IntegerField()
+    zip_code = models.CharField(max_length=8)
