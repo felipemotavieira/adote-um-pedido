@@ -1,9 +1,11 @@
-from rest_framework import generics, views
+from rest_framework import generics, views, status
+from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from donees.models import Donee
 from users.models import User
+from institutions.models import Institution
 from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsDonorSolicitationUser
 from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
@@ -17,9 +19,29 @@ class SolicitationView(generics.ListCreateAPIView):
     serializer_class = SolicitationSerializer
     queryset = Solicitation.objects.all()
 
+    def create(self,request, *args,**kwargs):
+        donee = get_object_or_404(Donee,id = self.request.data['donee'])
+        canCreate = donee.solicitations.all()
+        for solicitation in canCreate:
+            if solicitation.status != "Desativado":
+                return Response(data = {"message": "User Already has another active solicitation"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return super().create(request,*args,**kwargs)
+
+
     def perform_create(self, serializer):
-        donee = Donee.objects.get(id = self.request.data['donee'])
-        serializer.save(donee = donee)
+        donee = get_object_or_404(Donee,id = self.request.data['donee'])
+        institution = get_object_or_404(Institution, owner = donee.institution.owner.id)
+        serializer.save(donee = donee, institution = institution)
+
+
+    
+    def get_queryset(self):
+        if self.request.user.is_staff != True:
+            return self.queryset.filter(status = "Disponível")
+        elif self.request.user.is_superuser != True:
+            institution = get_object_or_404(Institution, owner = self.request.user.id)
+            return self.queryset.filter( institution = institution)
+        return self.queryset.all()
 
 
 class SolicitationDetailView(generics.RetrieveUpdateDestroyAPIView):
