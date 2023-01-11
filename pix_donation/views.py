@@ -8,7 +8,6 @@ from pix_donation.models import PixDonation
 from pix_donation.serializers import PixDonationSerializer
 from institutions.models import Institution
 import asyncio
-import ipdb
 
 
 class PixDonationView(generics.ListCreateAPIView):
@@ -19,21 +18,14 @@ class PixDonationView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         data = self.request.data
         institution = Institution.objects.filter(id=data["donee_institution"])[0]
-        # ipdb.set_trace()
 
         donor = self.request.user
         value = data["value"]
         pix_qrcode = asyncio.run(create_payment_pix(donor, value))
-        # image_qrcode = pix_qrcode["imagemQrcode"].replace("data:image/png;base64,", "")
-
-        # ipdb.set_trace()
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        # serializer.save(donee_institution=institution, user=donor)
-        serializer.save()
-        # self.perform_create(serializer)
-        # headers = self.get_success_headers(serializer.data)
+        serializer.save(donee_institution=institution, donor=donor)
 
         send_mail(
             subject="Doação - AdoteUmPedido",
@@ -48,7 +40,7 @@ class PixDonationView(generics.ListCreateAPIView):
         )
 
         response = {
-            "data": data,
+            "data": serializer.data,
             "qr_code": pix_qrcode['qrcode']
         }
 

@@ -1,7 +1,6 @@
 from gerencianet import Gerencianet
 from .credenciais import CREDENTIALS
 import base64
-import asyncio
 
 
 gn = Gerencianet(CREDENTIALS)
@@ -48,10 +47,9 @@ async def create_payment_pix(donor, value):
     response = gn.pix_generate_QRCode(params=params)
     print(response)
 
-    # #Generate QRCode Image
+    # Generate QRCode Image
     # if('imagemQrcode' in response):
     #     with open("qrCodeImage.png", "wb") as fh:
     #         fh.write(base64.b64decode(response['imagemQrcode'].replace('data:image/png;base64,', '')))
 
     return response
-# asyncio.run(create_payment_pix())

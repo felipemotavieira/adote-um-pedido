@@ -11,7 +11,6 @@ class PixDonationSerializer(serializers.ModelSerializer):
             "value",
             "registered_at",
             "donee_institution",
-            "donor",
         ]
 
-        read_only_fields = ["registered_at", "donor"]
+        read_only_fields = ["registered_at"]
