@@ -20,6 +20,7 @@ class SolicitationView(generics.ListCreateAPIView):
     queryset = Solicitation.objects.all()
 
     def create(self,request, *args,**kwargs):
+        
         donee = get_object_or_404(Donee,id = self.request.data['donee'])
         canCreate = donee.solicitations.all()
         for solicitation in canCreate:
@@ -28,7 +29,9 @@ class SolicitationView(generics.ListCreateAPIView):
         return super().create(request,*args,**kwargs)
 
 
+
     def perform_create(self, serializer):
+        
         donee = get_object_or_404(Donee,id = self.request.data['donee'])
         institution = get_object_or_404(Institution, owner = donee.institution.owner.id)
         serializer.save(donee = donee, institution = institution)

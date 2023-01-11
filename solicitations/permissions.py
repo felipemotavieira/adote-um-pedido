@@ -14,7 +14,7 @@ class IsStaffOrReadOnly(permissions.BasePermission):
 
         if (
             request.user.is_authenticated
-            and request.user.is_superuser or request.user == donee.institution.owner
+            and request.user.is_superuser or request.user == donee.institution.owner 
         ):
             return True
 

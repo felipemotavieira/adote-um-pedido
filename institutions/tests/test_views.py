@@ -4,7 +4,7 @@ from institutions.models import Institution
 from users.models import User
 
 
-class InstitutionsViewsTest(APITestCase):
+class SolicitationsViewsTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.admin = User.objects.create_user(
@@ -195,7 +195,7 @@ class InstitutionsViewsTest(APITestCase):
     def test_normal_user_cannot_update_an_institution(self):
         self.authenticate_user()
         institution = self.institutions[0]
-        response = self.client.patch(f"/api/institutions/{institution.id}/")
+        response = self.client.patch(f"/api/institutions/{institution.id}/",  {"name": "Institution"})
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})

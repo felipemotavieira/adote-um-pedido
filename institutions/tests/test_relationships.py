@@ -6,7 +6,7 @@ from addresses.models import Address
 from institutions.models import Institution
 
 
-class InstitutionModelTest(TestCase):
+class SolicitationsModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user_data = {
