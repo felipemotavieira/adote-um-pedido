@@ -8,7 +8,7 @@ class isAdmOrStaff(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
-        institution = Institution.objects.get(pk = view.kwargs["pk"])
+        institution = Institution.objects.get(id = request.data["institution"])
 
         if request.user.id == institution.owner.id or request.user.is_superuser:
             return True
@@ -29,7 +29,3 @@ class isAdmOwner(permissions.BasePermission):
        
 
         return False
-
-
-
-  

@@ -134,7 +134,7 @@ class DoneeseViewsTest(APITestCase):
 
     def test_can_list_all_donees(self):
 
-        response = self.client.get("/api/donee/")
+        response = self.client.get("/api/donees/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(self.donees), len(response.data))
         
@@ -143,10 +143,11 @@ class DoneeseViewsTest(APITestCase):
      
     def test_cannot_create_donee_without_authentication(self):
 
-        response = self.client.post( f"/api/donee/create/{self.institution1.id}/",
+        response = self.client.post("/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution1.id
             }
         )
 
@@ -155,42 +156,47 @@ class DoneeseViewsTest(APITestCase):
 
     def test_adm_can_create_a_donnee(self):
         self.authenticate_admin()
-        response = self.client.post( f"/api/donee/create/{self.institution1.id}/",
+        response = self.client.post("/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution1.id
             }
         )
         self.assertEqual(response.status_code, 201)
 
     def test_normal_user_cannot_create_an_donee(self):
+
         self.authenticate_user()
-        response = self.client.post( f"/api/donee/create/{self.institution1.id}/",
+        response = self.client.post("/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution1.id
             }
         )
-
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
    
     def test_staff_owner_intitution_can_create_a_donee(self):
         self.authenticate_staff()
-        response = self.client.post( f"/api/donee/create/{self.institution3.id}/",
+        response = self.client.post( "/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution3.id
             }
         )
         self.assertEqual(response.status_code, 201)
 
     def test_staff_no_owner_intitution_cant_create_a_donee(self):
         self.authenticate_staff2()
-        response = self.client.post( f"/api/donee/create/{self.institution3.id}/",
+        response = self.client.post( "/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution3.id
             }
         )
         self.assertEqual(response.status_code, 403)
@@ -199,10 +205,11 @@ class DoneeseViewsTest(APITestCase):
     def test_user_create_a_donee(self):
 
         self.authenticate_user()
-        response = self.client.post( f"/api/donee/create/{self.institution3.id}/",
+        response = self.client.post( "/api/donees/",
             {
                 "name": "Arthur Silva",
-                "age": "09"
+                "age": "09",
+                "institution": self.institution3.id
             }
         )
         self.assertEqual(response.status_code, 403)
@@ -211,7 +218,7 @@ class DoneeseViewsTest(APITestCase):
     def test_can_retrieve_a_donee(self):
 
         donee = self.donees[0]
-        response = self.client.get(f"/api/donee/{donee.id}/")
+        response = self.client.get(f"/api/donees/{donee.id}/")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(donee.id))
@@ -219,8 +226,8 @@ class DoneeseViewsTest(APITestCase):
 
     def test_cannot_update_or_delete_institution_without_authentication(self):
         donee = self.donees[0]
-        update_response = self.client.patch(f"/api/donee/{donee.id}/")
-        delete_response = self.client.delete(f"/api/donee/{donee.id}/")
+        update_response = self.client.patch(f"/api/donees/{donee.id}/")
+        delete_response = self.client.delete(f"/api/donees/{donee.id}/")
 
         self.assertEqual(update_response.status_code, 401)
         self.assertEqual(delete_response.status_code, 401)
@@ -231,22 +238,22 @@ class DoneeseViewsTest(APITestCase):
     def test_normal_user_cannot_update_a_donee(self):
         self.authenticate_user()
         donee = self.donees[0]
-        response = self.client.patch(f"/api/donee/{donee.id}/")
+        response = self.client.patch(f"/api/donees/{donee.id}/")
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
 
     def test_normal_user_cannot_delete_a_donee(self):
         self.authenticate_user()
         donee = self.donees[0]
-        response = self.client.patch(f"/api/donee/{donee.id}/")
-        response = self.client.delete(f"/api/donee/{donee.id}/")
+        response = self.client.patch(f"/api/donees/{donee.id}/")
+        response = self.client.delete(f"/api/donees/{donee.id}/")
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
 
     def test_admin_can_update_a_donee(self):
         self.authenticate_admin()
         donee = self.donees[0]
-        response = self.client.patch(f"/api/donee/{donee.id}/", {"name": "Pedro Perreira"})
+        response = self.client.patch(f"/api/donees/{donee.id}/", {"name": "Pedro Perreira"})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(donee.id))
@@ -255,7 +262,7 @@ class DoneeseViewsTest(APITestCase):
     def test_admin_can_delete_a_donee(self):
         self.authenticate_admin()
         donee = self.donees[0]
-        response = self.client.delete(f"/api/donee/{donee.id}/")
+        response = self.client.delete(f"/api/donees/{donee.id}/")
     
         self.assertEqual(response.status_code, 204)
         self.assertIsNone(response.data)
@@ -265,7 +272,7 @@ class DoneeseViewsTest(APITestCase):
         self.authenticate_staff()
         donee = self.donees[3]
         
-        response = self.client.patch(f"/api/donee/{donee.id}/", {"age": 3})
+        response = self.client.patch(f"/api/donees/{donee.id}/", {"age": 3})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(donee.id))
@@ -275,7 +282,7 @@ class DoneeseViewsTest(APITestCase):
 
         self.authenticate_staff()
         donee = self.donees[3]
-        response = self.client.delete(f"/api/donee/{donee.id}/")
+        response = self.client.delete(f"/api/donees/{donee.id}/")
         
         self.assertEqual(response.status_code, 204)
         self.assertIsNone(response.data, None)
@@ -285,7 +292,7 @@ class DoneeseViewsTest(APITestCase):
 
         self.authenticate_staff2()
         donee = self.donees[3]
-        response = self.client.patch(f"/api/donee/{donee.id}/", {"name": "Pedro Perreira"})
+        response = self.client.patch(f"/api/donees/{donee.id}/", {"name": "Pedro Perreira"})
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
@@ -293,7 +300,7 @@ class DoneeseViewsTest(APITestCase):
     def test_staff_cannot_delete_another_staff_donee(self):
         self.authenticate_staff2()
         donee = self.donees[3]
-        response = self.client.delete(f"/api/donee/{donee.id}/")
+        response = self.client.delete(f"/api/donees/{donee.id}/")
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})

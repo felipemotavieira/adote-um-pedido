@@ -10,7 +10,9 @@ from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsD
 from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
 from .exceptions import SolicitationAlreadyReceived
-
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
+import ipdb
 
 class SolicitationView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -20,7 +22,6 @@ class SolicitationView(generics.ListCreateAPIView):
     queryset = Solicitation.objects.all()
 
     def create(self,request, *args,**kwargs):
-        
         donee = get_object_or_404(Donee,id = self.request.data['donee'])
         canCreate = donee.solicitations.all()
         for solicitation in canCreate:
@@ -29,9 +30,7 @@ class SolicitationView(generics.ListCreateAPIView):
         return super().create(request,*args,**kwargs)
 
 
-
     def perform_create(self, serializer):
-        
         donee = get_object_or_404(Donee,id = self.request.data['donee'])
         institution = get_object_or_404(Institution, owner = donee.institution.owner.id)
         serializer.save(donee = donee, institution = institution)
@@ -84,6 +83,9 @@ class SolicitationAtributionView(views.APIView):
             data = {'status': 'Recebido'}
 
         if solicitation.status == 'Recebido':
+            data = {'status': 'Desativado'}
+
+        if solicitation.status == 'Desativado':
             raise SolicitationAlreadyReceived
 
         serializer = SolicitationSerializer(solicitation, data=data, partial=True)
@@ -91,6 +93,15 @@ class SolicitationAtributionView(views.APIView):
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
+
+
+        send_mail(
+            subject = 'Atualização de status',
+            message = f'Olá, {request.user}. \nO Status da solicição reivindicada foi atualizado para: {data["status"]}.',
+            from_email = settings.EMAIL_HOST_USER,
+            recipient_list = [request.user.email],
+            fail_silently = False
+        )
 
         return views.Response(serializer.data)
 

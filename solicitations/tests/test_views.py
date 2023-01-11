@@ -201,11 +201,11 @@ class SolicitationsViewsTest(APITestCase):
 
     
     def test_can_list_all_solicitations(self):
+        self.authenticate_admin()
 
         response = self.client.get("/api/solicitations/")
         
         self.assertEqual(response.status_code, 200)
-        ipdb.set_trace()
         self.assertEqual(len(self.solicitations), len(response.data))
         
         for solicitation in self.solicitations:

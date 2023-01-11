@@ -44,4 +44,5 @@ class DoneeModelTest(TestCase):
     def test_institution_fields(self):
         self.assertEqual(self.donee.name, self.donee_data["name"])
         self.assertEqual(self.donee.age, self.donee_data["age"])
-        
+
+  
