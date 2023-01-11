@@ -1,7 +1,6 @@
 from django.db import models
 import uuid
 
-
 class TypeChoice(models.TextChoices):
     ORFANATO = "Orfanato"
     ASILO = "Asilo"
@@ -11,7 +10,6 @@ class TypeChoice(models.TextChoices):
 class StatusChoices(models.TextChoices):
     UNDER_EXAMINATION = "Under examination"
     APPROVED = "Approved"
-
 
 class Institution(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)

@@ -37,11 +37,9 @@ class InstitutionView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
      
 
-
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsInstitutionOwner]
-
     serializer_class = InstitutionSerializer
     queryset = Institution.objects.all()
 

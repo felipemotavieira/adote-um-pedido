@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 
-
 class doneeView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [isAdmOrStaff]
@@ -51,4 +50,3 @@ class doneeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [isAdmOwner]
     serializer_class = DoneeSerializers
     queryset = Donee.objects.all()
-    

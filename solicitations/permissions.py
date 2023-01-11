@@ -3,7 +3,7 @@ from rest_framework.views import Request, View
 from .models import Solicitation
 from donees.models import Donee
 from django.shortcuts import get_object_or_404
-import ipdb
+
 
 class IsStaffOrReadOnly(permissions.BasePermission):
     def has_permission(self, request: Request, view: View) -> bool:
