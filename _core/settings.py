@@ -15,11 +15,18 @@ from datetime import timedelta
 import environ
 import os
 from django.core.management.utils import get_random_secret_key
+import environ
 import os
 import dj_database_url
 import dotenv
 
 dotenv.load_dotenv()
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -185,11 +192,6 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-environ.Env.read_env(BASE_DIR / '.env')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
