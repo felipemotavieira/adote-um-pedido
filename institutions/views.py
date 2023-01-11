@@ -1,11 +1,11 @@
 from .serializers import InstitutionSerializer
 from .models import Institution
+from .exceptions import UserAlreadyHasInstitution
 from rest_framework import generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsStaffOrReadOnly, IsInstitutionOwner
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-import time
 
 
 class InstitutionView(generics.ListCreateAPIView):
@@ -16,6 +16,9 @@ class InstitutionView(generics.ListCreateAPIView):
     queryset = Institution.objects.all()
 
     def perform_create(self, serializer):
+        if hasattr(self.request.user, 'institution'):
+            raise UserAlreadyHasInstitution
+
         send_mail(
             subject = 'Solicitação recebida',
             message = f'Olá, {self.request.user}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
@@ -30,6 +33,7 @@ class InstitutionView(generics.ListCreateAPIView):
             recipient_list = [self.request.data["email"]],
             fail_silently = False
         )
+
         serializer.save(owner=self.request.user)
      
 
