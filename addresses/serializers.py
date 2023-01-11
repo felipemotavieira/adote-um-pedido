@@ -12,20 +12,21 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        created_address = Address.objects.create(**validated_data)
         user = self.context["request"].user
 
         if user.is_staff is True and not user.is_superuser:
-            institution = Institution.objects.get(owner=user)
+            try:
+                institution = Institution.objects.get(owner=user)
+                created_address = Address.objects.create(**validated_data)
 
-            if not institution:
+                setattr(institution, "address", created_address)
+                institution.save()
+
+                return created_address
+            except:
                 raise InstitutionDoesNotExist
 
-            setattr(institution, "address", created_address)
-            institution.save()
-
-            return created_address
-
+        created_address = Address.objects.create(**validated_data)
         setattr(user, "address", created_address)
         user.save()
 
