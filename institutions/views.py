@@ -23,22 +23,15 @@ class InstitutionView(generics.ListCreateAPIView):
             recipient_list = [self.request.user.email],
             fail_silently = False
         )
-        serializer.save(owner=self.request.user)
-        time.sleep(5)
         send_mail(
             subject = 'Instituição criada',
-            message = f'Olá, {self.request.data["name"]}. \nA instituição foi criada e já se encontra ativa.',
+            message = f'Olá, {self.request.data["name"]}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
             from_email = settings.EMAIL_HOST_USER,
             recipient_list = [self.request.data["email"]],
             fail_silently = False
         )
-        send_mail(
-            subject = 'Instituição criada',
-            message = f'Olá, {self.request.user}. \nA instituição foi criada e já se encontra ativa.',
-            from_email = settings.EMAIL_HOST_USER,
-            recipient_list = [self.request.user.email],
-            fail_silently = False
-        )
+        serializer.save(owner=self.request.user)
+     
 
 
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
