@@ -36,7 +36,7 @@ class AddressViewsTest(APITestCase):
             username="naiane_reis",
             email="naiane@mail.com",
             password="1234",
-            cpf="22222222222",
+            cpf="33333333333",
             is_superuser=False,
             is_staff=False,
         )
@@ -53,9 +53,9 @@ class AddressViewsTest(APITestCase):
             "state": "State",
             "city": "City",
             "street": "Street",
-            "number": 000,
+            "number": "000",
             "district": "District",
-            "zip_code": 00000000,
+            "zip_code": "00000000",
         }
 
         cls.addresses = [Address.objects.create(**cls.address_data) for _ in range(5)]
@@ -91,6 +91,26 @@ class AddressViewsTest(APITestCase):
         for address in self.addresses:
             self.assertIn(AddressSerializer(instance=address).data, response.data)
 
+    def test_staff_can_list_all_addresses(self):
+        self.authenticate_staff()
+        response = self.client.get("/api/address/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(self.addresses), len(response.data))
+
+        for address in self.addresses:
+            self.assertIn(AddressSerializer(instance=address).data, response.data)
+
+    def test_normal_user_can_list_all_addresses(self):
+        self.authenticate_user()
+        response = self.client.get("/api/address/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(self.addresses), len(response.data))
+
+        for address in self.addresses:
+            self.assertIn(AddressSerializer(instance=address).data, response.data)
+
     def test_cannot_create_an_address_without_authentication(self):
         response = self.client.post(
             "/api/address/",
@@ -98,9 +118,9 @@ class AddressViewsTest(APITestCase):
                 "state": "State",
                 "city": "City",
                 "street": "Street",
-                "number": 000,
+                "number": "000",
                 "district": "District",
-                "zip_code": 00000000,
+                "zip_code": "00000000",
             },
         )
 
@@ -115,9 +135,9 @@ class AddressViewsTest(APITestCase):
                 "state": "State",
                 "city": "City",
                 "street": "Street",
-                "number": 000,
+                "number": "000",
                 "district": "District",
-                "zip_code": 00000000,
+                "zip_code": "00000000",
             },
         )
         self.assertEqual(response.status_code, 201)
@@ -130,9 +150,9 @@ class AddressViewsTest(APITestCase):
                 "state": "State",
                 "city": "City",
                 "street": "Street",
-                "number": 000,
+                "number": "000",
                 "district": "District",
-                "zip_code": 00000000,
+                "zip_code": "00000000",
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -151,9 +171,9 @@ class AddressViewsTest(APITestCase):
                 "state": "State",
                 "city": "City",
                 "street": "Street",
-                "number": 000,
+                "number": "000",
                 "district": "District",
-                "zip_code": 00000000,
+                "zip_code": "00000000",
             },
         )
         self.assertEqual(response.status_code, 201)
@@ -166,9 +186,9 @@ class AddressViewsTest(APITestCase):
                 "state": "State",
                 "city": "City",
                 "street": "Street",
-                "number": 000,
+                "number": "000",
                 "district": "District",
-                "zip_code": 00000000,
+                "zip_code": "00000000",
             },
         )
         self.assertEqual(response.status_code, 201)
@@ -206,8 +226,12 @@ class AddressViewsTest(APITestCase):
 
     def test_staff_can_retrieve_your_own_address(self):
         self.authenticate_staff()
+
         Institution.objects.create(**self.institution_data, owner=self.staff)
         address = Address.objects.create(**self.address_data)
+        self.staff.address = address
+        self.staff.save()
+
         response = self.client.get(f"/api/address/{address.id}/")
 
         self.assertEqual(response.status_code, 200)
@@ -227,6 +251,9 @@ class AddressViewsTest(APITestCase):
     def test_user_can_retrieve_your_own_address(self):
         self.authenticate_user()
         address = Address.objects.create(**self.address_data)
+        self.user.address = address
+        self.user.save()
+
         response = self.client.get(f"/api/address/{address.id}/")
 
         self.assertEqual(response.status_code, 200)
@@ -265,8 +292,12 @@ class AddressViewsTest(APITestCase):
 
     def test_staff_can_update_your_own_address(self):
         self.authenticate_staff()
+
         Institution.objects.create(**self.institution_data, owner=self.staff)
         address = Address.objects.create(**self.address_data)
+        self.staff.address = address
+        self.staff.save()
+
         response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
 
         self.assertEqual(response.status_code, 200)
@@ -286,6 +317,9 @@ class AddressViewsTest(APITestCase):
     def test_user_can_update_your_own_address(self):
         self.authenticate_user()
         address = Address.objects.create(**self.address_data)
+        self.user.address = address
+        self.user.save()
+
         response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
 
         self.assertEqual(response.status_code, 200)

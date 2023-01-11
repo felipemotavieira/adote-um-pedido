@@ -25,9 +25,9 @@ class UserModelTest(TestCase):
             "state": "State",
             "city": "City",
             "street": "Street",
-            "number": 000,
+            "number": "000",
             "district": "District",
-            "zip_code": 00000000,
+            "zip_code": "00000000",
         }
 
     def test_if_user_can_have_a_address(self):

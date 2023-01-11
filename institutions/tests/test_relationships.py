@@ -24,9 +24,9 @@ class InstitutionModelTest(TestCase):
             "state": "State",
             "city": "City",
             "street": "Street",
-            "number": 000,
+            "number": "000",
             "district": "District",
-            "zip_code": 00000000,
+            "zip_code": "00000000",
         }
 
         cls.institution_data = {
