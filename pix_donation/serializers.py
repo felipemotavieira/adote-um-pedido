@@ -9,7 +9,6 @@ class PixDonationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "value",
-            "institution",
             "registered_at",
             "donee_institution",
             "donor",

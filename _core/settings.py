@@ -15,8 +15,6 @@ from datetime import timedelta
 import environ
 import os
 from django.core.management.utils import get_random_secret_key
-import environ
-import os
 import dj_database_url
 import dotenv
 

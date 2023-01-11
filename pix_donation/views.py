@@ -6,6 +6,8 @@ from django.conf import settings
 from rest_framework.response import Response
 from pix_donation.models import PixDonation
 from pix_donation.serializers import PixDonationSerializer
+from institutions.models import Institution
+import asyncio
 import ipdb
 
 
@@ -16,26 +18,38 @@ class PixDonationView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = self.request.data
-        institution = data.institution
+        institution = Institution.objects.filter(id=data["donee_institution"])[0]
+        # ipdb.set_trace()
 
         donor = self.request.user
-        value = data.value
-        pix_qrcode = create_payment_pix(donor, value)
-        image_qrcode = pix_qrcode["imagemQrcode"].replace("data:image/png;base64,", "")
+        value = data["value"]
+        pix_qrcode = asyncio.run(create_payment_pix(donor, value))
+        # image_qrcode = pix_qrcode["imagemQrcode"].replace("data:image/png;base64,", "")
 
-        self.perform_create(data)
+        # ipdb.set_trace()
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        # serializer.save(donee_institution=institution, user=donor)
+        serializer.save()
+        # self.perform_create(serializer)
+        # headers = self.get_success_headers(serializer.data)
 
         send_mail(
             subject="Doação - AdoteUmPedido",
             message=f"""
-                Olá, {donor['first_name']}.
-                    Este é o código pix da doação para a instituição {institution['name']}:
+                Olá, {donor.first_name}.
+                    Este é o código pix da doação para a instituição {institution.name}:
                     {pix_qrcode['qrcode']}
-                    {image_qrcode}
             """,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[donor["email"]],
+            recipient_list=[donor.email],
             fail_silently=False,
         )
 
-        return Response(data={...})
+        response = {
+            "data": data,
+            "qr_code": pix_qrcode['qrcode']
+        }
+
+        return Response(data=response)
