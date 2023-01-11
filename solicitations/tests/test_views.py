@@ -4,7 +4,7 @@ from institutions.models import Institution
 from solicitations.models import Solicitation
 from solicitations.serializers import SolicitationSerializer
 from users.models import User
-
+import ipdb
 class SolicitationsViewsTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
@@ -200,15 +200,16 @@ class SolicitationsViewsTest(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     
-    # def test_can_list_all_solicitations(self):
+    def test_can_list_all_solicitations(self):
 
-    #     response = self.client.get("/api/solicitations/")
-    #     self.assertEqual(response.status_code, 200)
+        response = self.client.get("/api/solicitations/")
         
-    #     self.assertEqual(len(self.solicitations), len(response.data))
+        self.assertEqual(response.status_code, 200)
+        ipdb.set_trace()
+        self.assertEqual(len(self.solicitations), len(response.data))
         
-    #     for solicitation in self.solicitations:
-    #         self.assertIn(SolicitationSerializer(instance=solicitation).data, response.data)
+        for solicitation in self.solicitations:
+            self.assertIn(SolicitationSerializer(instance=solicitation).data, response.data)
      
 
     def test_normal_user_cannot_create_an_solicitation(self):

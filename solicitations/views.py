@@ -10,7 +10,7 @@ from .permissions import IsInstitutionDoneeSame, IsStaffOrReadOnly, IsDonor, IsD
 from .serializers import SolicitationSerializer
 from .models import Solicitation, StatusChoices
 from .exceptions import SolicitationAlreadyReceived
-import ipdb
+
 
 class SolicitationView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
