@@ -24,7 +24,7 @@ class InstitutionView(generics.ListCreateAPIView):
             fail_silently = False
         )
         send_mail(
-            subject = 'Instituição criada',
+            subject = 'Solicitação recebida',
             message = f'Olá, {self.request.data["name"]}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
             from_email = settings.EMAIL_HOST_USER,
             recipient_list = [self.request.data["email"]],
