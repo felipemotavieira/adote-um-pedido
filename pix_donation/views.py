@@ -1,13 +1,15 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics
 from apiPIX.gerar_cobranca_pix import create_payment_pix
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import EmailMessage
 from django.conf import settings
 from rest_framework.response import Response
 from pix_donation.models import PixDonation
 from pix_donation.serializers import PixDonationSerializer
 from institutions.models import Institution
 import asyncio
+import os
+import ipdb
 
 
 class PixDonationView(generics.ListCreateAPIView):
@@ -27,21 +29,24 @@ class PixDonationView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(donee_institution=institution, donor=donor)
 
-        send_mail(
-            subject="Doação - AdoteUmPedido",
-            message=f"""
+        email = EmailMessage(
+            "Doação - AdoteUmPedido",
+            f"""
                 Olá, {donor.first_name}.
                     Este é o código pix da doação para a instituição {institution.name}:
                     {pix_qrcode['qrcode']}
             """,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[donor.email],
-            fail_silently=False,
+            settings.EMAIL_HOST_USER,
+            [donor.email],
         )
+        # email.attach_file('apiPIX/qrCodeImage.png')
+        email.send()
 
         response = {
             "data": serializer.data,
-            "qr_code": pix_qrcode['qrcode']
+            "qr_code": pix_qrcode['qrcode'],
         }
+
+        # os.remove("apiPIX/qrCodeImage.png")
 
         return Response(data=response)

@@ -51,4 +51,3 @@ class doneeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [isAdmOwner]
     serializer_class = DoneeSerializers
     queryset = Donee.objects.all()
-    
