@@ -75,7 +75,14 @@ class AddressViewsTest(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
 
-    def test_can_list_all_addresses(self):
+    def test_cannot_list_addresses_without_authentication(self):
+        response = self.client.get("/api/address/")
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, {"detail": "Authentication credentials were not provided."})
+
+    def test_admin_can_list_all_addresses(self):
+        self.authenticate_admin()
         response = self.client.get("/api/address/")
 
         self.assertEqual(response.status_code, 200)
@@ -115,24 +122,24 @@ class AddressViewsTest(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
 
-    # def test_staff_cannot_create_an_address_without_an_institution(self):
-    #     self.authenticate_staff()
-    #     response = self.client.post(
-    #         "/api/address/",
-    #         {
-    #             "state": "State",
-    #             "city": "City",
-    #             "street": "Street",
-    #             "number": 000,
-    #             "district": "District",
-    #             "zip_code": 00000000,
-    #         },
-    #     )
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertEqual(
-    #         response.data,
-    #         {"detail": "You don't have an institution yet. Create your institution first and then create the address."},
-    #     )
+    def test_staff_cannot_create_an_address_without_an_institution(self):
+        self.authenticate_staff()
+        response = self.client.post(
+            "/api/address/",
+            {
+                "state": "State",
+                "city": "City",
+                "street": "Street",
+                "number": 000,
+                "district": "District",
+                "zip_code": 00000000,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data,
+            {"detail": "You don't have an institution yet. Create your institution first and then create the address."},
+        )
 
     def test_staff_can_create_an_address_having_an_institution(self):
         self.authenticate_staff()
@@ -177,25 +184,25 @@ class AddressViewsTest(APITestCase):
         self.assertEqual(retrieve_response.data, {"detail": "Authentication credentials were not provided."})
         self.assertEqual(update_response.data, {"detail": "Authentication credentials were not provided."})
 
-    # def test_admin_can_retrieve_your_own_address(self):
-    #     self.authenticate_admin()
-    #     address = Address.objects.create(**self.address_data)
-    #     response = self.client.get(f"/api/address/{address.id}/")
+    def test_admin_can_retrieve_your_own_address(self):
+        self.authenticate_admin()
+        address = Address.objects.create(**self.address_data)
+        response = self.client.get(f"/api/address/{address.id}/")
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data["id"], str(address.id))
-    #     self.assertEqual(AddressSerializer(instance=address).data, response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(AddressSerializer(instance=address).data, response.data)
 
-    # def test_admin_can_retrieve_another_user_address(self):
-    #     self.authenticate_user()
-    #     address = Address.objects.create(**self.address_data)
+    def test_admin_can_retrieve_another_user_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
 
-    #     self.authenticate_admin()
-    #     response = self.client.get(f"/api/address/{address.id}/")
+        self.authenticate_admin()
+        response = self.client.get(f"/api/address/{address.id}/")
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data["id"], str(address.id))
-    #     self.assertEqual(AddressSerializer(instance=address).data, response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(AddressSerializer(instance=address).data, response.data)
 
     def test_staff_can_retrieve_your_own_address(self):
         self.authenticate_staff()
@@ -207,13 +214,90 @@ class AddressViewsTest(APITestCase):
         self.assertEqual(response.data["id"], str(address.id))
         self.assertEqual(AddressSerializer(instance=address).data, response.data)
 
-    # def test_admin_can_retrieve_another_user_address(self):
-    #     self.authenticate_user()
-    #     address = Address.objects.create(**self.address_data)
+    def test_staff_cannot_retrieve_another_user_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
 
-    #     self.authenticate_admin()
-    #     response = self.client.get(f"/api/address/{address.id}/")
+        self.authenticate_staff()
+        response = self.client.get(f"/api/address/{address.id}/")
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data["id"], str(address.id))
-    #     self.assertEqual(AddressSerializer(instance=address).data, response.data)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
+    def test_user_can_retrieve_your_own_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
+        response = self.client.get(f"/api/address/{address.id}/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(AddressSerializer(instance=address).data, response.data)
+
+    def test_user_cannot_retrieve_another_user_address(self):
+        self.authenticate_admin()
+        address = Address.objects.create(**self.address_data)
+
+        self.authenticate_user()
+        response = self.client.get(f"/api/address/{address.id}/")
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
+    def test_admin_can_update_your_own_address(self):
+        self.authenticate_admin()
+        address = Address.objects.create(**self.address_data)
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(response.data["street"], "Street 3")
+
+    def test_admin_can_update_another_user_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
+
+        self.authenticate_admin()
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(response.data["street"], "Street 3")
+
+    def test_staff_can_update_your_own_address(self):
+        self.authenticate_staff()
+        Institution.objects.create(**self.institution_data, owner=self.staff)
+        address = Address.objects.create(**self.address_data)
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(response.data["street"], "Street 3")
+
+    def test_staff_cannot_update_another_user_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
+
+        self.authenticate_staff()
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
+
+    def test_user_can_update_your_own_address(self):
+        self.authenticate_user()
+        address = Address.objects.create(**self.address_data)
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(address.id))
+        self.assertEqual(response.data["street"], "Street 3")
+
+    def test_user_cannot_update_another_user_address(self):
+        self.authenticate_admin()
+        address = Address.objects.create(**self.address_data)
+
+        self.authenticate_user()
+        response = self.client.patch(f"/api/address/{address.id}/", {"street": "Street 3"})
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, {"detail": "You do not have permission to perform this action."})
