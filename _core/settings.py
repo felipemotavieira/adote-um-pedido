@@ -15,8 +15,6 @@ from datetime import timedelta
 import environ
 import os
 from django.core.management.utils import get_random_secret_key
-import environ
-import os
 import dj_database_url
 import dotenv
 
@@ -70,6 +68,7 @@ MY_APPS = [
     "institutions",
     "solicitations",
     "users",
+    "pix_donation",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
