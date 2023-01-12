@@ -8,5 +8,5 @@ CREDENTIALS = {
     'client_id': os.getenv("CLIENT_ID"),
     'client_secret': os.getenv("CLIENT_SECRET"),
     'sandbox': False,
-    'certificate': 'apiPIX/certificado.pem'
+    'certificate': os.getenv("certificado.pem")
 }
