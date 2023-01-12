@@ -16,26 +16,25 @@ class InstitutionView(generics.ListCreateAPIView):
     queryset = Institution.objects.all()
 
     def perform_create(self, serializer):
-        if hasattr(self.request.user, 'institution'):
+        if hasattr(self.request.user, "institution"):
             raise UserAlreadyHasInstitution
 
         send_mail(
-            subject = 'Solicitação recebida',
-            message = f'Olá, {self.request.user}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
-            from_email = settings.EMAIL_HOST_USER,
-            recipient_list = [self.request.user.email],
-            fail_silently = False
+            subject="Solicitação recebida",
+            message=f"Olá, {self.request.user}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[self.request.user.email],
+            fail_silently=False,
         )
         send_mail(
-            subject = 'Solicitação recebida',
-            message = f'Olá, {self.request.data["name"]}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
-            from_email = settings.EMAIL_HOST_USER,
-            recipient_list = [self.request.data["email"]],
-            fail_silently = False
+            subject="Solicitação recebida",
+            message=f'Olá, {self.request.data["name"]}. \nA solicitação de criação da nova instituição foi recebida e no momento estamos validando os dados para a criação.',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[self.request.data["email"]],
+            fail_silently=False,
         )
 
         serializer.save(owner=self.request.user)
-     
 
 
 class InstitutionDetailView(generics.RetrieveUpdateDestroyAPIView):
