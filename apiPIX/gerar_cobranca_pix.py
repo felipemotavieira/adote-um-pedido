@@ -31,8 +31,8 @@ async def create_payment_pix(donor, value):
     response = gn.pix_generate_QRCode(params=params)
 
 
-    # if('imagemQrcode' in response):
-    #     with open("apiPIX/qrCodeImage.png", "wb") as fh:
-    #         fh.write(base64.b64decode(response['imagemQrcode'].replace('data:image/png;base64,', '')))
+    if('imagemQrcode' in response):
+        with open("apiPIX/qrCodeImage.png", "wb") as fh:
+            fh.write(base64.b64decode(response['imagemQrcode'].replace('data:image/png;base64,', '')))
 
     return response

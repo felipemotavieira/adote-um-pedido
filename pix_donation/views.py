@@ -39,7 +39,7 @@ class PixDonationView(generics.ListCreateAPIView):
             settings.EMAIL_HOST_USER,
             [donor.email],
         )
-        # email.attach_file('apiPIX/qrCodeImage.png')
+        email.attach_file('apiPIX/qrCodeImage.png')
         email.send()
 
         response = {
@@ -47,6 +47,6 @@ class PixDonationView(generics.ListCreateAPIView):
             "qr_code": pix_qrcode['qrcode'],
         }
 
-        # os.remove("apiPIX/qrCodeImage.png")
+        os.remove("apiPIX/qrCodeImage.png")
 
         return Response(data=response)
