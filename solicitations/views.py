@@ -30,7 +30,7 @@ class SolicitationView(generics.ListCreateAPIView):
         donee = get_object_or_404(Donee, id=self.request.data["donee"])
         canCreate = donee.solicitations.all()
         for solicitation in canCreate:
-            if solicitation.status != "Desativado":
+            if solicitation.status == "Disponível":
                 return Response(
                     data={"message": "User Already has another active solicitation"},
                     status=status.HTTP_406_NOT_ACCEPTABLE,
